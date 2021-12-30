@@ -33,15 +33,14 @@ void firstFit(int* block_size, int number_of_blocks, int* process_size, int numb
         }
     }
 
-    // we display the process number, process size , block number and block size
-    cout << "\nProcess No.\tProcess Size\tBlock no.\tBlock Size\n";
+    // we display the process number, process size , block number
+    cout << "\nProcess No.\tProcess Size\tBlock no.\n";
     for (int i = 0; i < number_of_processes; i++)
     {
-        cout << " " << i + 1 << "\t\t\t\t"
+        cout << " " << i + 1 << "\t\t\t"
             << process_size[i] << "\t\t";
         if (allocation[i] != -1) {
             cout << "\t\t" << allocation[i] + 1;
-            cout << "\t\t\t" << block_size[i];
         }
         else {
             cout << "\t" << "Not Allocated";
@@ -50,22 +49,115 @@ void firstFit(int* block_size, int number_of_blocks, int* process_size, int numb
     }
 }
 
-// Driver code
-void bestfit()
-
+//WorstFit:
+void worstFit(int* block_size, int number_of_blocks, int* process_size, int number_of_processes)
 {
-    cout << "l";
+    //First: Create an array to asssign each block to it's suitable process.
+    int* allocation = new int[number_of_processes];
+    //Second: Inistialize each element in the array to -1.
+    for (int i = 0; i < number_of_blocks; i++)
+    {
+        allocation[i] = -1;
+    }
+    //Third: Create an array to assign each process to the least suitable block according to it's size.
+    for (int i=0; i<number_of_processes; i++)
+    {
+        int index = -1;
+        //Evaluate the array of blocks to find the least suitable block for the current process.
+        for (int j=0; j<number_of_blocks; j++)
+        {
+            if (block_size[j] >= process_size[i])
+            {
+                if (index == -1)
+                    index = j;
+                   
+                else if (block_size[index] < block_size[j])
+                    index = j;
+            }
+        }
+        if (index != -1)
+        {
+            //Allocate index j to the process value.
+            allocation[i] = index;
+            //Reduce available memory in this block.
+            block_size[index] -= process_size[i];
+        }
+    }
+        // we display the process number, process size , block number and block size
+    cout << "\nProcess No.\tProcess Size\tBlock no.\n";
+    for (int i = 0; i < number_of_processes; i++)
+    {
+        cout << " " << i + 1 << "\t\t\t"
+            << process_size[i] << "\t\t";
+        if (allocation[i] != -1) {
+            cout << "\t\t" << allocation[i] + 1;
+            
+        }
+        else {
+            cout << "\t" << "Not Allocated";
+        }
+        cout << endl;
+    }
 }
-void worstfit()
+
+
+//BestFit:
+void bestFit(int* block_size, int number_of_blocks, int* process_size, int number_of_processes)
 {
-    cout << "k";
+    //First: Create an array to asssign each block to it's suitable process.
+    int* allocation = new int[number_of_processes];
+    //Second: Inistialize each element in the array to -1.
+    for (int i = 0; i < number_of_blocks; i++)
+    {
+        allocation[i] = -1;
+    }
+    //Third: Create an array to assign each process to the most suitable block according to it's size.
+    for (int i=0; i<number_of_processes; i++)
+    {
+        int index = -1;
+        //Evaluate the array of blocks to find the most suitable block for the current process.
+        for (int j=0; j<number_of_blocks; j++)
+        {
+            if (block_size[j] >= process_size[i])
+            {
+                if (index == -1)
+                    index = j;
+                else if (block_size[index] > block_size[j])
+                    index = j;
+            }
+        }
+        if (index != -1)
+        {
+            //Allocate index j to the process value.
+            allocation[i] = index;
+            //Reduce available memory in this block.
+            block_size[index] -= process_size[i];
+        }
+    }
+      // we display the process number, process size , block number and block size
+    cout << "\nProcess No.\tProcess Size\tBlock no.\n";
+    for (int i = 0; i < number_of_processes; i++)
+    {
+        cout << " " << i + 1 << "\t\t\t"
+            << process_size[i] << "\t\t";
+        if (allocation[i] != -1) {
+            cout << "\t\t" << allocation[i] + 1;
+            
+        }
+        else {
+            cout << "\t" << "Not Allocated";
+        }
+        cout << endl;
+    }
+
 }
 
-
+//DriverCode:
 int main()
 {
-    int number_of_blocks, number_of_processes;
+    int number_of_blocks, number_of_processes,y;
 
+    do{
     cout << "Enter total number of blocks: ";
     cin >> number_of_blocks;
     int* block = new int[number_of_blocks];
@@ -87,7 +179,7 @@ int main()
 
     char choice;
 
-    cout << "Enter 1 to apply first fit algorithm, 2 for best fit algorithm, 3 for worst fit algorithm. ";
+    cout << "\nEnter 1 to apply first fit algorithm, 2 for best fit algorithm, 3 for worst fit algorithm. ";
     cin >> choice;
 
     switch (choice)
@@ -96,14 +188,19 @@ int main()
         firstFit(block, number_of_blocks, process, number_of_processes);
         break;
     case '2':
-        bestfit();
+        bestFit(block, number_of_blocks, process, number_of_processes);
         break;
     case '3':
-        worstfit();
+        worstFit(block, number_of_blocks, process, number_of_processes);
         break;
     default:
         cout << "Invalid value " << endl;
 
     }
-
+    //User chooses if they're willing to continue using the program.
+    cout << "\nEnter 1 if you wish to continue, enter 0 to stop: ";
+    cin >>y;
+    cout << "\n";
+   }while(y==1); 
+   cout << "\nThanks for using our program!";
 }
